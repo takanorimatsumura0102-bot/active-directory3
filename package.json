@@ -1,0 +1,17 @@
+{
+  "name": "ad-hello-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Active Directory ログイン後に hello を表示するサンプル",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "ldapjs": "^3.0.7"
+  }
+}
