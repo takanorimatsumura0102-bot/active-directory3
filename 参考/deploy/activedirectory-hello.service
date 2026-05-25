@@ -1,0 +1,22 @@
+[Unit]
+Description=Active Directory Hello Web App
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/var/www/activedirectory-hello
+Environment=NODE_ENV=production
+Environment=PORT=3010
+# --- Active Directory（環境に合わせて変更） ---
+Environment=LDAP_URL=ldap://LAN-SERVER5:389
+Environment=AD_BIND_FORMAT=downlevel
+Environment=AD_NETBIOS_DOMAIN=DOMAIN
+# Environment=LDAP_BASE_DN=DC=domain,DC=local
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
