@@ -4,8 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=ubuntu
-Group=ubuntu
+# VPS で git pull するユーザー（whoami の結果）に合わせる
+User=appuser
+Group=appuser
 WorkingDirectory=/var/www/activedirectory-hello
 Environment=NODE_ENV=production
 Environment=PORT=3010
