@@ -9,11 +9,40 @@ Group=ubuntu
 WorkingDirectory=/var/www/activedirectory-hello
 Environment=NODE_ENV=production
 Environment=PORT=3010
-# --- Active Directory（環境に合わせて変更） ---
+
+# ============================================================
+# Active Directory 接続設定
+# Windows にドメイン参加した PC で次を確認すると値が分かります:
+#   echo %USERDOMAIN%      → AD_NETBIOS_DOMAIN（例: DOMAIN）
+#   echo %USERDNSDOMAIN%   → AD_UPN_SUFFIX（例: company.local）
+#   nltest /dsgetdc:%USERDNSDOMAIN%  → DC 名（LDAP_URL のホスト部分）
+# ============================================================
+
+# AD サーバー（ドメインコントローラ）の LDAP アドレス
+# 参考 Program.cs の ldapServer = "LAN-SERVER5" に相当
+# 形式: ldap://ホスト名:389  または  ldaps://ホスト名:636
 Environment=LDAP_URL=ldap://LAN-SERVER5:389
+
+# ログイン時のユーザー名の形式
+# downlevel … DOMAIN\ユーザー名（参考 Program.cs と同じ。Windows の %USERDOMAIN%\ユーザー名）
+# upn       … ユーザー名@company.local
 Environment=AD_BIND_FORMAT=downlevel
+
+# NetBIOS ドメイン名（AD_BIND_FORMAT=downlevel のとき必須）
+# 参考 Program.cs の domain = "DOMAIN" に相当
+# Windows ログイン画面の「DOMAIN\」の DOMAIN 部分
 Environment=AD_NETBIOS_DOMAIN=DOMAIN
+
+# DNS ドメイン名（氏名検索のベース DN 生成・UPN 検索に使用）
+# Windows の %USERDNSDOMAIN% と同じ（例: company.local）
+# 未設定時は domain.local。実際のドメインに必ず合わせること
+Environment=AD_UPN_SUFFIX=domain.local
+
+# 氏名検索の起点 DN（通常は未設定で OK。AD_UPN_SUFFIX から自動生成される）
+# 例: company.local → DC=company,DC=local
+# ユーザーを特定 OU 配下に限定したい場合だけ明示指定
 # Environment=LDAP_BASE_DN=DC=domain,DC=local
+
 ExecStart=/usr/bin/node server.js
 Restart=on-failure
 RestartSec=5
